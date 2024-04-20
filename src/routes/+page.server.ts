@@ -3,7 +3,9 @@ export async function load({ locals }) {
 	const allRarities = await locals.db.rarity.findMany()
 	const allEnchantments = await locals.db.enchantment.findMany()
 	const allPrices = await locals.db.itemPrice.findMany()
-
+	const allFailures = await locals.db.failure.findMany()
+	const allTokens = await locals.db.token.findMany()
+	const allRequests = await locals.db.request.findMany()
 	const data = allItems.map((item) => {
 		const prices = allPrices.filter((price) => price.itemId === item.id)
 		const data = {
@@ -21,6 +23,9 @@ export async function load({ locals }) {
 		allEnchantments,
 		allPrices,
 		allRarities,
+		allFailures,
+		allTokens,
+		allRequests,
 	}
 }
 
