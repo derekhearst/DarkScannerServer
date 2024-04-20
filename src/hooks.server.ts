@@ -51,6 +51,7 @@ export const handle = async ({ event, resolve }) => {
 		if (!token) {
 			error(401, 'Unauthorized')
 		}
+		console.log('token', token)
 		const [basic, tokenValue] = token.split(' ')
 		if (basic !== 'Basic') {
 			error(401, 'Unauthorized')
