@@ -1,12 +1,3 @@
--- Migration number: 0001 	 2024-04-20T00:02:49.289Z
-
--- CreateTable
-CREATE TABLE "User" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "token" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
 -- CreateTable
 CREATE TABLE "Item" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -20,12 +11,27 @@ CREATE TABLE "Enchantment" (
 );
 
 -- CreateTable
+CREATE TABLE "Rarity" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "ItemPrice" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "itemId" INTEGER NOT NULL,
+    "rarityId" INTEGER NOT NULL,
     "price" INTEGER NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "ItemPrice_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "ItemPrice_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "ItemPrice_rarityId_fkey" FOREIGN KEY ("rarityId") REFERENCES "Rarity" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Fixes" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "from" TEXT NOT NULL,
+    "to" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -37,13 +43,13 @@ CREATE TABLE "_EnchantmentToItemPrice" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_token_key" ON "User"("token");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Item_name_key" ON "Item"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Enchantment_name_key" ON "Enchantment"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Rarity_name_key" ON "Rarity"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_EnchantmentToItemPrice_AB_unique" ON "_EnchantmentToItemPrice"("A", "B");

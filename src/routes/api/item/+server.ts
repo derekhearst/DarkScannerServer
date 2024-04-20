@@ -7,11 +7,12 @@ export async function GET({ locals }) {
 	return json(items)
 }
 
-export async function POST({ locals, request, cookies }) {
-	const key = cookies.get('api_key')
+export async function POST({ locals, request }) {
+	const key = request.headers.get('x-api-key')
 	if (key !== env.API_KEY) error(401, 'Unauthorized')
 	const { db } = locals
 	const data = await request.json()
+
 	const item = await db.item.create({
 		data,
 	})

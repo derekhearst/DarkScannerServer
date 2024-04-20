@@ -1,3 +1,4 @@
+import type { Item, Rarity, Enchantment } from '@prisma/client'
 import { json } from '@sveltejs/kit'
 
 export async function GET({ params, locals, url }) {
@@ -23,4 +24,29 @@ export async function GET({ params, locals, url }) {
 		count: prices.length,
 		uncertainty,
 	})
+}
+
+export async function POST({ locals, request }) {
+	const { db } = locals
+	type data = {
+		item: Item
+		rarity: Rarity
+		price: number
+		enchantments: { enchantment: Enchantment; value: number }[]
+	}
+	const data = (await request.json()) as data
+
+	const price = await db.itemPrice.create({
+		data: {
+			itemId: data.item.id,
+			rarityId: data.rarity.id,
+			price: data.price,
+			enchantments: {
+				connect: data.enchantments.map((enchantment) => ({
+					id: enchantment.enchantment.id,
+				})),
+			},
+		},
+	})
+	return json(price)
 }
