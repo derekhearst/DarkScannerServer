@@ -46,8 +46,7 @@ export const handle = async ({ event, resolve }) => {
 
 	// #region Tokens
 	const secureUrls = ['/api/enchantment', '/api/item', '/api/rarity', '/api/fix', '/api/failure']
-	console.log('event.request.url', event.request.url)
-	if (secureUrls.includes(event.request.url)) {
+	if (secureUrls.includes(event.url.pathname)) {
 		const token = event.request.headers.get('Authorization')
 		if (!token) {
 			error(401, 'Unauthorized')
