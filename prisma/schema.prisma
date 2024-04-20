@@ -55,16 +55,33 @@ model Fixes {
 }
 
 model Token {
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  ip        String
   key       String
   isRevoked Boolean  @default(false)
   createdAt DateTime @default(now())
 
   requests Request[]
+  failures Failure[]
 }
 
 model Request {
-  id      Int   @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  params String
+
+  tokenId Int
+  token   Token @relation(fields: [tokenId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Failure {
+  id Int @id @default(autoincrement())
+
+  text String
+
   tokenId Int
   token   Token @relation(fields: [tokenId], references: [id])
 
