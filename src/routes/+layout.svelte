@@ -5,8 +5,7 @@
 
 <header>
 	{#if data.user}
-		<a href="/api/logout">Sign out</a>
-		{data.user.isAdmin}
+		<a href="/api/github/logout">Sign out</a>
 	{:else}
 		<a href="/api/github">Sign in with GitHub</a>
 	{/if}
