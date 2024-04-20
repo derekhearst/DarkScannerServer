@@ -1,7 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient, Token } from '@prisma/client'
 import type { DatabaseUserAttributes, Lucia, User } from 'lucia'
 
 declare global {
@@ -11,6 +11,7 @@ declare global {
 			db: PrismaClient
 			lucia: Lucia
 			user: DatabaseUserAttributes | null
+			token: Token
 		}
 		// interface PageData {}
 		// interface PageState {}

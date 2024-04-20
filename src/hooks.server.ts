@@ -4,6 +4,7 @@ import { Lucia } from 'lucia'
 import { env } from '$env/dynamic/private'
 import { dev } from '$app/environment'
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma'
+import { error } from '@sveltejs/kit'
 
 export const handle = async ({ event, resolve }) => {
 	const adapter = new PrismaD1(event.platform?.env?.DB)
@@ -43,5 +44,28 @@ export const handle = async ({ event, resolve }) => {
 	console.log('event.locals.user', event.locals.user)
 	// #endregion
 
+	// #region Tokens
+	const secureUrls = ['/api/enchantment', '/api/item', '/api/rarity', '/api/fix', '/api/failure']
+	if (secureUrls.includes(event.request.url)) {
+		const token = event.request.headers.get('Authorization')
+		if (!token) {
+			error(401, 'Unauthorized')
+		}
+		const [basic, tokenValue] = token.split(' ')
+		if (basic !== 'Basic') {
+			error(401, 'Unauthorized')
+		}
+		const existingToken = await prisma.token.findFirst({
+			where: {
+				key: tokenValue,
+			},
+		})
+		if (!existingToken) {
+			error(401, 'Unauthorized')
+		}
+		event.locals.token = existingToken
+	}
+
+	// #endregion
 	return resolve(event)
 }
