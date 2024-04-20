@@ -1,28 +1,58 @@
+import { enchantments, items } from '$lib/server/constants'
 import type { Item, Rarity, Enchantment } from '@prisma/client'
-import { json } from '@sveltejs/kit'
+import { error, json } from '@sveltejs/kit'
 
 export async function GET({ params, locals, url }) {
 	const enchantmentParam = url.searchParams.get('enchantments')
+	const rarityParam = url.searchParams.get('rarity')
+	if (!rarityParam) error(400, 'Rarity is required')
 	const enchantmentIds = enchantmentParam ? enchantmentParam.split(',').map((id) => parseInt(id)) : []
+	const rarityId = parseInt(rarityParam)
+	if (isNaN(rarityId)) error(400, 'Invalid rarity')
 	const { db } = locals
 	const itemId = parseInt(params.id)
-	const prices = await db.itemPrice.findMany({
+	let prices = await db.itemPrice.findMany({
 		where: {
 			itemId: itemId,
+			rarityId: rarityId,
 			enchantments: {
 				some: { id: { in: enchantmentIds } },
 			},
 		},
+		include: { enchantments: true },
 		orderBy: { createdAt: 'desc' },
 	})
-	const sum = prices.reduce((acc, price) => acc + price.price, 0)
-	const avg = sum / prices.length
-	const uncertainty = Math.sqrt(prices.reduce((acc, price) => acc + Math.pow(price.price - avg, 2), 0) / prices.length)
+	if (prices.length === 0) {
+		prices = await db.itemPrice.findMany({
+			where: {
+				itemId: itemId,
+				rarityId: rarityId,
+			},
+			include: { enchantments: true },
+			orderBy: { createdAt: 'desc' },
+		})
+	}
+	if (items.length === 0) {
+		return json({
+			error: 'No prices found for this item.',
+		})
+	}
+
+	const sortedPrices = prices.map((price) => price.price).sort((a, b) => a - b)
+	const length = sortedPrices.length
+	const median =
+		length % 2 === 0
+			? (sortedPrices[length / 2 - 1] + sortedPrices[length / 2]) / 2
+			: sortedPrices[Math.floor(length / 2)]
+	const unmatchedEnchantmentsCount = enchantmentIds.filter(
+		(enchantmentId) =>
+			!prices.some((price) => price.enchantments.some((enchantment) => enchantment.id === enchantmentId)),
+	).length
 
 	return json({
-		price: avg,
-		count: prices.length,
-		uncertainty,
+		price: median,
+		seen: prices.length,
+		missingEnchantments: unmatchedEnchantmentsCount,
 	})
 }
 
@@ -31,8 +61,8 @@ export async function POST({ locals, request }) {
 	type data = {
 		item: Item
 		rarity: Rarity
+		enchantments: Enchantment[]
 		price: number
-		enchantments: { enchantment: Enchantment; value: number }[]
 	}
 	const data = (await request.json()) as data
 
@@ -43,7 +73,7 @@ export async function POST({ locals, request }) {
 			price: data.price,
 			enchantments: {
 				connect: data.enchantments.map((enchantment) => ({
-					id: enchantment.enchantment.id,
+					id: enchantment.id,
 				})),
 			},
 		},

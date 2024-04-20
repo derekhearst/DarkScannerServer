@@ -2,12 +2,15 @@
 // for information about these interfaces
 
 import type { PrismaClient } from '@prisma/client'
+import type { Lucia, User } from 'lucia'
 
 declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
 			db: PrismaClient
+			lucia: Lucia
+			user: User | undefined
 		}
 		// interface PageData {}
 		// interface PageState {}
@@ -17,6 +20,19 @@ declare global {
 			}
 		}
 	}
+}
+
+declare module 'lucia' {
+	interface Register {
+		Lucia: typeof lucia
+		DatabaseUserAttributes: DatabaseUserAttributes
+	}
+}
+
+interface DatabaseUserAttributes {
+	id: number
+	githubId: string
+	isAdmin: boolean
 }
 
 export {}

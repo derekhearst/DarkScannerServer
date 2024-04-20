@@ -34,7 +34,11 @@
     "vite": "^5.0.3"
   },
   "dependencies": {
+    "@lucia-auth/adapter-prisma": "^4.0.1",
     "@prisma/adapter-d1": "^5.12.1",
-    "@prisma/client": "5.12.1"
+    "@prisma/client": "5.12.1",
+    "arctic": "^1.5.0",
+    "lucia": "^3.1.1",
+    "oslo": "^1.2.0"
   }
 }
