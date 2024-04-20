@@ -51,7 +51,7 @@
 	{#each data.allFailures as failure}
 		{@const token = data.allTokens.find((token) => token.id === failure.tokenId)}
 		<div>
-			{token?.key} : {failure.text}
+			{token?.id} : {failure.text}
 		</div>
 	{/each}
 </details>
