@@ -49,11 +49,9 @@
 	<summary>Failures</summary>
 	<div>Count {data.allFailures.length}</div>
 	{#each data.allFailures as failure}
-		{@const item = data.items.find((item) => item.id === failure.itemId)}
-		{@const rarity = data.allRarities.find((rarity) => rarity.id === failure.rarityId)}
-
+		{@const token = data.allTokens.find((token) => token.id === failure.tokenId)}
 		<div>
-			{rarity?.name} - {item?.name} : {failure.failure}
+			{token?.key} : {failure.text}
 		</div>
 	{/each}
 </details>
