@@ -57,9 +57,9 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 		// the specific error message depends on the provider
 		if (e instanceof OAuth2RequestError) {
 			// invalid code
-			error(400, 'Bad Request')
+			error(400, 'Bad Request' + e.message)
 		}
-		error(500, 'Internal Server Error')
+		error(500, 'Internal Server Error' + e.message)
 	}
 }
 
