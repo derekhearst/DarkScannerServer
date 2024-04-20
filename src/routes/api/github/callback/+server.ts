@@ -20,8 +20,6 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 				Authorization: `Bearer ${tokens.accessToken}`,
 			},
 		})
-		const githubText = await githubUserResponse.clone().text()
-		console.log(githubText)
 		const githubUser: GitHubUser = await githubUserResponse.json()
 
 		// Replace this with your own DB client.
@@ -58,12 +56,12 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 		redirect(302, '/')
 	} catch (e) {
 		// the specific error message depends on the provider
-		console.error(e)
+		console.error(JSON.stringify(e))
 		if (e instanceof OAuth2RequestError) {
 			// invalid code
-			error(400, 'Bad Request' + e.message)
+			error(400, 'Bad Request')
 		}
-		error(500, 'Internal Server Error' + e.message)
+		error(500, 'Internal Server Error')
 	}
 }
 
