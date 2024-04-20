@@ -36,8 +36,9 @@ export const handle = async ({ event, resolve }) => {
 				path: '.',
 				...sessionCookie.attributes,
 			})
-			event.locals.user = user
 		}
+		// @ts-expect-error - user is't being typed correctly
+		event.locals.user = user
 	}
 	console.log('event.locals.user', event.locals.user)
 	// #endregion

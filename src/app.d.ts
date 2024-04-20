@@ -2,7 +2,7 @@
 // for information about these interfaces
 
 import type { PrismaClient } from '@prisma/client'
-import type { Lucia, User } from 'lucia'
+import type { DatabaseUserAttributes, Lucia, User } from 'lucia'
 
 declare global {
 	namespace App {
@@ -10,7 +10,7 @@ declare global {
 		interface Locals {
 			db: PrismaClient
 			lucia: Lucia
-			user: User | undefined
+			user: DatabaseUserAttributes | null
 		}
 		// interface PageData {}
 		// interface PageState {}
