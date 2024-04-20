@@ -1,6 +1,6 @@
-import { error, json } from '@sveltejs/kit'
+import { error } from '@sveltejs/kit'
 
-export async function GET({ locals, request }) {
+export async function POST({ locals, request }) {
 	const token = request.headers.get('token')
 	if (!token) {
 		error(401, 'Unauthorized')
@@ -12,14 +12,12 @@ export async function GET({ locals, request }) {
 		error(401, 'Unauthorized')
 	}
 
-	const newRequest = await locals.db.request.create({
+	const text = await request.text()
+	await locals.db.failure.create({
 		data: {
 			tokenId: existingToken.id,
-			params: 'GET /api/rarity',
+			text,
 		},
 	})
-
-	const { db } = locals
-	const rarities = await db.rarity.findMany()
-	return json(rarities)
+	return new Response(null)
 }
