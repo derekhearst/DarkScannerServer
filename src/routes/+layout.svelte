@@ -1,10 +1,15 @@
 <script lang="ts">
 	import '../app.css'
+	export let data
 </script>
 
 <header>
-	<h1>Sign in</h1>
-	<a href="/api/github">Sign in with GitHub</a>
+	{#if data.user}
+		<a href="/api/logout">Sign out</a>
+		{data.user.isAdmin}
+	{:else}
+		<a href="/api/github">Sign in with GitHub</a>
+	{/if}
 </header>
 
 <slot />

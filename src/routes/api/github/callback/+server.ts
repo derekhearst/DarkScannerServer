@@ -21,8 +21,8 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 			},
 		})
 		const githubUser: GitHubUser = await githubUserResponse.json()
-
-		// Replace this with your own DB client.
+		console.log(githubUser)
+		const isAdmin = githubUser.email == 'derekallenhearst@gmail.com'
 		const existingUser = await locals.db.user.findFirst({
 			where: {
 				githubId: githubUser.id,
@@ -36,6 +36,16 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 				path: '.',
 				...sessionCookie.attributes,
 			})
+			if (githubUser.email == 'derekallenhearst@gmail.com') {
+				await locals.db.user.update({
+					where: {
+						id: existingUser.id,
+					},
+					data: {
+						isAdmin: true,
+					},
+				})
+			}
 			return new Response(null, {
 				status: 302,
 				headers: {
@@ -50,6 +60,7 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 				data: {
 					id: userId,
 					githubId: githubUser.id,
+					isAdmin,
 				},
 			})
 
@@ -80,5 +91,6 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 
 interface GitHubUser {
 	id: number
+	email: string
 	login: string
 }

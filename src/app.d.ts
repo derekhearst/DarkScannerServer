@@ -27,12 +27,11 @@ declare module 'lucia' {
 		Lucia: typeof lucia
 		DatabaseUserAttributes: DatabaseUserAttributes
 	}
-}
-
-interface DatabaseUserAttributes {
-	id: number
-	githubId: string
-	isAdmin: boolean
+	interface DatabaseUserAttributes {
+		id: number
+		githubId: string
+		isAdmin: boolean
+	}
 }
 
 export {}
