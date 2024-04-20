@@ -48,10 +48,12 @@ model ItemPrice {
   createdAt DateTime @default(now())
 }
 
-model Fixes {
+model Fix {
   id   Int    @id @default(autoincrement())
   from String
   to   String
+
+  @@map("Fixes")
 }
 
 model Token {

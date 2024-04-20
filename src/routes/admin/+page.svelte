@@ -1,6 +1,25 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
+
 	export let data
 </script>
+
+<details>
+	<summary>Add Fix</summary>
+	<form action="/admin?/addFix" method="POST" use:enhance>
+		<input type="text" name="text" placeholder="Text" />
+		<input type="text" name="tokenId" placeholder="Token ID" />
+		<button type="submit">Add Fix</button>
+	</form>
+</details>
+
+<details>
+	<summary>Add Item</summary>
+	<form action="/admin?/addItem" method="POST" use:enhance>
+		<input type="text" name="name" placeholder="Name" />
+		<button type="submit">Add Item</button>
+	</form>
+</details>
 
 <details>
 	<summary>Failures</summary>
@@ -18,7 +37,7 @@
 	<div>Count {data.allTokens.length}</div>
 	{#each data.allTokens as token}
 		<div>
-			{token.createdAt.toLocaleString()}
+			{token.id} - {token.key} - {token.isRevoked ? 'Revoked' : 'Active'}
 		</div>
 	{/each}
 </details>

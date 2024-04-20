@@ -62,6 +62,9 @@ export const handle = async ({ event, resolve }) => {
 		if (!existingToken) {
 			error(401, 'Unauthorized')
 		}
+		if (existingToken.isRevoked) {
+			error(401, 'Unauthorized')
+		}
 		await event.locals.db.request.create({
 			data: {
 				tokenId: existingToken.id,
