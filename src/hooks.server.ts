@@ -39,6 +39,7 @@ export const handle = async ({ event, resolve }) => {
 			event.locals.user = user
 		}
 	}
+	console.log('event.locals.user', event.locals.user)
 	// #endregion
 
 	return resolve(event)
