@@ -55,6 +55,7 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 		redirect(302, '/')
 	} catch (e) {
 		// the specific error message depends on the provider
+		console.error(e)
 		if (e instanceof OAuth2RequestError) {
 			// invalid code
 			error(400, 'Bad Request' + e.message)
