@@ -16,6 +16,7 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 		const tokens = await github.validateAuthorizationCode(code)
 		const githubUserResponse = await fetch('https://api.github.com/user', {
 			headers: {
+				'User-Agent': 'DarkScanner',
 				Authorization: `Bearer ${tokens.accessToken}`,
 			},
 		})
