@@ -19,7 +19,7 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 				Authorization: `Bearer ${tokens.accessToken}`,
 			},
 		})
-		const githubText = await githubUserResponse.text()
+		const githubText = await githubUserResponse.clone().text()
 		console.log(githubText)
 		const githubUser: GitHubUser = await githubUserResponse.json()
 
