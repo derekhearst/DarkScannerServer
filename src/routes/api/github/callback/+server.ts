@@ -19,6 +19,8 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 				Authorization: `Bearer ${tokens.accessToken}`,
 			},
 		})
+		const githubText = await githubUserResponse.text()
+		console.log(githubText)
 		const githubUser: GitHubUser = await githubUserResponse.json()
 
 		// Replace this with your own DB client.
