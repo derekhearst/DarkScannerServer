@@ -41,7 +41,6 @@ export const handle = async ({ event, resolve }) => {
 		// @ts-expect-error - user is't being typed correctly
 		event.locals.user = user
 	}
-	console.log('event.locals.user', event.locals.user)
 	// #endregion
 
 	// #region Tokens
@@ -51,7 +50,6 @@ export const handle = async ({ event, resolve }) => {
 		if (!token) {
 			error(401, 'Unauthorized')
 		}
-		console.log('token', token)
 		const [basic, tokenValue] = token.split(' ')
 		if (basic !== 'Basic') {
 			error(401, 'Unauthorized')
