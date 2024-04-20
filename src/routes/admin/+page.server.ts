@@ -23,7 +23,7 @@ export const actions = {
 			from: form.get('from') as string,
 			to: form.get('to') as string,
 		}
-		const fix = await locals.db.fixes.create({ data })
+		const fix = await locals.db.fix.create({ data })
 		return fix
 	},
 	async addItem({ request, locals }) {

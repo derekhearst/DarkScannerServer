@@ -9,7 +9,7 @@ export async function POST({ locals, request }) {
 	await db.itemPrice.deleteMany()
 	await db.rarity.deleteMany()
 	await db.item.deleteMany()
-	await db.fixes.deleteMany()
+	await db.fix.deleteMany()
 
 	const existingItems = await db.item.findMany()
 	for (const item of items) {
@@ -67,11 +67,11 @@ export async function POST({ locals, request }) {
 		existingPrices.push(createdPrice)
 	}
 
-	const existingFixes = await db.fixes.findMany()
+	const existingFixes = await db.fix.findMany()
 	for (const fix of manualFixes) {
 		const existingFix = existingFixes.find((f) => f.from === fix.bad)
 		if (existingFix) continue
-		const createdFix = await db.fixes.create({
+		const createdFix = await db.fix.create({
 			data: {
 				from: fix.bad,
 				to: fix.good,

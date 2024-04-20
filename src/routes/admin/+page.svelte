@@ -7,8 +7,8 @@
 <details>
 	<summary>Add Fix</summary>
 	<form action="/admin?/addFix" method="POST" use:enhance>
-		<input type="text" name="text" placeholder="Text" />
-		<input type="text" name="tokenId" placeholder="Token ID" />
+		<input type="text" name="from" placeholder="From" />
+		<input type="text" name="to" placeholder="to" />
 		<button type="submit">Add Fix</button>
 	</form>
 </details>
