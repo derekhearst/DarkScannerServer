@@ -36,6 +36,13 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 				path: '.',
 				...sessionCookie.attributes,
 			})
+			return new Response(null, {
+				status: 302,
+				headers: {
+					Location: '/',
+					'Set-Cookie': sessionCookie.serialize(),
+				},
+			})
 		} else {
 			const userId = generateId(15)
 
@@ -52,8 +59,14 @@ export async function GET({ locals, url, cookies }): Promise<Response> {
 				path: '.',
 				...sessionCookie.attributes,
 			})
+			return new Response(null, {
+				status: 302,
+				headers: {
+					Location: '/',
+					'Set-Cookie': sessionCookie.serialize(),
+				},
+			})
 		}
-		redirect(302, '/')
 	} catch (e) {
 		// the specific error message depends on the provider
 		console.error(JSON.stringify(e))
