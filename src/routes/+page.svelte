@@ -17,10 +17,9 @@
 		const data = Array.from(statsByRarity.entries()).map(([rarityId, prices]) => {
 			const average = calculateAverage(prices)
 			const median = calculateMedian(prices)
-			const mode = calculateMode(prices)
 			const min = calculateMin(prices)
 			const max = calculateMax(prices)
-			return { rarityId, average, median, mode, min, max }
+			return { rarityId, average, median, min, max }
 		})
 		return data
 	}
@@ -67,9 +66,8 @@
 					{#each stats as stat}
 						<td>
 							<div>
-								<div>Average: {stat.average}</div>
-								<div>Median: {stat.median}</div>
-								<div>Mode: {stat.mode}</div>
+								<div>Average: {stat.average.toFixed(0)}</div>
+								<div>Median: {stat.median.toFixed(0)}</div>
 								<div>Min: {stat.min}</div>
 								<div>Max: {stat.max}</div>
 							</div>
