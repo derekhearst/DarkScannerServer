@@ -52,6 +52,7 @@
 		<thead>
 			<tr>
 				<th>Name</th>
+				<th>Count</th>
 				{#each data.allRarities as rarity}
 					<th>{rarity.name}</th>
 				{/each}
@@ -61,7 +62,8 @@
 			{#each data.items as item}
 				{@const stats = calculateStatsForItem(item.prices)}
 				<tr>
-					<td>{item.name}</td>
+					<td>{item.name}</td>3
+					<td>{item.prices.length}</td>
 					{#each stats as stat}
 						<td>
 							<div>
