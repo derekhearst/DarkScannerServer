@@ -1,4 +1,4 @@
-import { calculateAverage, calculateMedian } from '$lib/server/calc'
+import { calculateAverage, calculateMedian } from '$lib/calc'
 import { enchantments, items } from '$lib/server/constants'
 import type { Item, Rarity, Enchantment } from '@prisma/client'
 import { error, json } from '@sveltejs/kit'

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { calculateAverage, calculateMax, calculateMedian, calculateMin, calculateMode } from '$lib/server/calc'
+	import { calculateAverage, calculateMax, calculateMedian, calculateMin, calculateMode } from '$lib/calc.js'
 	import type { ItemPrice } from '@prisma/client'
 
 	export let data
