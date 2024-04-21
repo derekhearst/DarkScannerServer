@@ -1,4 +1,4 @@
-import { calculateMedian } from '$lib/server/calc'
+import { calculateAverage, calculateMedian } from '$lib/server/calc'
 import { enchantments, items } from '$lib/server/constants'
 import type { Item, Rarity, Enchantment } from '@prisma/client'
 import { error, json } from '@sveltejs/kit'
@@ -28,8 +28,11 @@ export async function GET({ params, locals, url, request }) {
 	})
 	if (exactMatchPrices.length) {
 		const median = calculateMedian(exactMatchPrices)
+		const average = calculateAverage(exactMatchPrices)
 		return json({
-			price: median,
+			median: median,
+			average: average,
+			prices: exactMatchPrices.map((price) => price.price),
 			exact: true,
 		})
 	}
@@ -59,8 +62,11 @@ export async function GET({ params, locals, url, request }) {
 		)
 		const prices = matchesBasedOffBestMatch.map((price) => price.price)
 		const median = calculateMedian(prices)
+		const average = calculateAverage(prices)
 		return json({
 			price: median,
+			average: average,
+			prices: prices.map((price) => price.price),
 			matchCount: bestMatch.matchCount,
 		})
 	}
@@ -73,9 +79,11 @@ export async function GET({ params, locals, url, request }) {
 		},
 	})
 	const median = calculateMedian(prices)
+	const average = calculateAverage(prices)
 	return json({
 		price: median,
-		uncertain: true,
+		average: average,
+		prices: prices.map((price) => price.price),
 	})
 	// #endregion
 }

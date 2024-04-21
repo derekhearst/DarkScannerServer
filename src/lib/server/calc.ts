@@ -9,3 +9,8 @@ export function calculateMedian(prices: ItemPrice[]) {
 			: sortedPrices[Math.floor(length / 2)]
 	return median
 }
+
+export function calculateAverage(prices: ItemPrice[]) {
+	const total = prices.reduce((acc, price) => acc + price.price, 0)
+	return total / prices.length
+}
