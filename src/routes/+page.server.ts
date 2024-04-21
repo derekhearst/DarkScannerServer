@@ -10,10 +10,7 @@ export async function load({ locals }) {
 		const prices = allPrices.filter((price) => price.itemId === item.id)
 		const data = {
 			...item,
-			prices: prices.map((price) => ({
-				price: price.price,
-				rarity: allRarities.find((rarity) => rarity.id === price.rarityId)?.name,
-			})),
+			prices,
 		}
 		return data
 	})
@@ -23,8 +20,4 @@ export async function load({ locals }) {
 		allEnchantments,
 		allRarities,
 	}
-}
-
-export const actions = {
-	async importFromConstants({ locals }) {},
 }

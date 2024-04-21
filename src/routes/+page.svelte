@@ -1,6 +1,29 @@
 <script lang="ts">
+	import { calculateAverage, calculateMax, calculateMedian, calculateMin, calculateMode } from '$lib/server/calc'
+	import type { ItemPrice } from '@prisma/client'
+
 	export let data
-	let hideSmokey = true
+
+	function calculateStatsForItem(prices: ItemPrice[]) {
+		const statsByRarity = new Map<number, ItemPrice[]>()
+		for (const price of prices) {
+			const rarityId = price.rarityId
+			if (!statsByRarity.has(rarityId)) {
+				statsByRarity.set(rarityId, [])
+			}
+			statsByRarity.get(rarityId)?.push(price)
+		}
+
+		const data = Array.from(statsByRarity.entries()).map(([rarityId, prices]) => {
+			const average = calculateAverage(prices)
+			const median = calculateMedian(prices)
+			const mode = calculateMode(prices)
+			const min = calculateMin(prices)
+			const max = calculateMax(prices)
+			return { rarityId, average, median, mode, min, max }
+		})
+		return data
+	}
 </script>
 
 <svelte:head>
@@ -29,18 +52,27 @@
 		<thead>
 			<tr>
 				<th>Name</th>
-				<th>Price</th>
+				{#each data.allRarities as rarity}
+					<th>{rarity.name}</th>
+				{/each}
 			</tr>
 		</thead>
 		<tbody>
 			{#each data.items as item}
+				{@const stats = calculateStatsForItem(item.prices)}
 				<tr>
 					<td>{item.name}</td>
-					<td>
-						{#each item.prices as price}
-							<span>{price.rarity} - {price.price}</span>
-						{/each}
-					</td>
+					{#each stats as stat}
+						<td>
+							<div>
+								<div>Average: {stat.average}</div>
+								<div>Median: {stat.median}</div>
+								<div>Mode: {stat.mode}</div>
+								<div>Min: {stat.min}</div>
+								<div>Max: {stat.max}</div>
+							</div>
+						</td>
+					{/each}
 				</tr>
 			{/each}
 		</tbody>
