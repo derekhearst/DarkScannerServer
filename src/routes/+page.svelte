@@ -19,7 +19,8 @@
 			const median = calculateMedian(prices)
 			const min = calculateMin(prices)
 			const max = calculateMax(prices)
-			return { rarityId, average, median, min, max }
+			const count = prices.length
+			return { rarityId, average, median, min, max, count }
 		})
 		return data
 	}
@@ -47,11 +48,10 @@
 <section class="mt-4 flex flex-col items-center">
 	<h3 class=" text-5xl font-bold">Item Stats</h3>
 
-	<table class="border">
-		<thead>
+	<table class="max-h-[80vh] overflow-y-auto border">
+		<thead class="sticky top-0 z-10">
 			<tr>
 				<th>Name</th>
-				<th>Count</th>
 				{#each data.allRarities as rarity}
 					<th>{rarity.name}</th>
 				{/each}
@@ -61,11 +61,11 @@
 			{#each data.items as item}
 				{@const stats = calculateStatsForItem(item.prices)}
 				<tr>
-					<td>{item.name}</td>3
-					<td>{item.prices.length}</td>
+					<td>{item.name}</td>
 					{#each stats as stat}
 						<td>
 							<div>
+								<div>Count: {stat.count}</div>
 								<div>Average: {stat.average.toFixed(0)}</div>
 								<div>Median: {stat.median.toFixed(0)}</div>
 								<div>Min: {stat.min}</div>
