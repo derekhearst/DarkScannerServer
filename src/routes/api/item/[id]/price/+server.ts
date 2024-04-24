@@ -50,6 +50,7 @@ export async function GET({ params, locals, url, request }) {
 	const partialPrices = partialMatches.map((record) => record.price)
 	const partialAverage = calculateAverage(partialPrices)
 	const partialMedian = calculateMedian(partialPrices)
+	const randomPartialPrices = partialPrices.sort(() => Math.random() - 0.5)
 
 	return json({
 		exact: {
@@ -60,7 +61,7 @@ export async function GET({ params, locals, url, request }) {
 		partial: {
 			average: partialAverage,
 			median: partialMedian,
-			prices: partialPrices.splice(0, Math.min(10, partialPrices.length)),
+			prices: randomPartialPrices.splice(0, Math.min(10, randomPartialPrices.length)),
 		},
 	})
 }
