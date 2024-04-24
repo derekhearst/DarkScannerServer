@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { calculateAverage, calculateMax, calculateMedian, calculateMin, calculateMode } from '$lib/calc.js'
+	import { calculateAverage, calculateMedian } from '$lib/calc.js'
 	import type { ItemPrice } from '@prisma/client'
 
 	export let data
@@ -15,12 +15,10 @@
 		}
 
 		const data = Array.from(statsByRarity.entries()).map(([rarityId, prices]) => {
-			const average = calculateAverage(prices)
-			const median = calculateMedian(prices)
-			const min = calculateMin(prices)
-			const max = calculateMax(prices)
+			const average = calculateAverage(prices.map((p) => p.price))
+			const median = calculateMedian(prices.map((p) => p.price))
 			const count = prices.length
-			return { rarityId, average, median, min, max, count }
+			return { rarityId, average, median, count }
 		})
 		return data
 	}
@@ -68,8 +66,6 @@
 								<div>Count: {stat.count}</div>
 								<div>Average: {stat.average.toFixed(0)}</div>
 								<div>Median: {stat.median.toFixed(0)}</div>
-								<div>Min: {stat.min}</div>
-								<div>Max: {stat.max}</div>
 							</div>
 						</td>
 					{/each}

@@ -41,7 +41,28 @@ export async function GET({ params, locals, url, request }) {
 		}
 	})
 
-	return json(data)
+	const exactMatches = data.filter((record) => record.enchantmentIds.every((id) => enchantmentIds.includes(id)))
+	const exactPrices = exactMatches.map((record) => record.price)
+	const exactAverage = calculateAverage(exactPrices)
+	const exactMedian = calculateMedian(exactPrices)
+
+	const partialMatches = data
+	const partialPrices = partialMatches.map((record) => record.price)
+	const partialAverage = calculateAverage(partialPrices)
+	const partialMedian = calculateMedian(partialPrices)
+
+	return json({
+		exact: {
+			average: exactAverage,
+			median: exactMedian,
+			prices: exactPrices.splice(0, Math.min(10, exactPrices.length)),
+		},
+		partial: {
+			average: partialAverage,
+			median: partialMedian,
+			prices: partialPrices.splice(0, Math.min(10, partialPrices.length)),
+		},
+	})
 }
 
 export async function POST({ locals, request }) {
