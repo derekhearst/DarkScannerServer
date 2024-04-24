@@ -21,7 +21,7 @@ export async function GET({ params, locals, url, request }) {
 		rarityId: number
 		price: number
 		createdAt: string
-		enchantmentIds: string
+		enchantmentIds: string | null
 	}
 	const records: returnType[] = await db.$queryRaw`
 		SELECT "ItemPrice".*, GROUP_CONCAT("_EnchantmentToItemPrice"."A") AS "enchantmentIds"
@@ -37,7 +37,7 @@ export async function GET({ params, locals, url, request }) {
 			rarityId: record.rarityId,
 			price: record.price,
 			createdAt: record.createdAt,
-			enchantmentIds: record.enchantmentIds.split(',').map((id) => parseInt(id)),
+			enchantmentIds: record.enchantmentIds ? record.enchantmentIds.split(',').map((id) => parseInt(id)) : [],
 		}
 	})
 
