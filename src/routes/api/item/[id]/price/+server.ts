@@ -45,7 +45,6 @@ export async function GET({ params, locals, url, request }) {
 	const exactPrices = exactMatches.map((record) => record.price)
 	const exactAverage = calculateAverage(exactPrices)
 	const exactMedian = calculateMedian(exactPrices)
-	const randomExactPrices = exactPrices.sort(() => Math.random() - 0.5)
 	const exactMax = Math.max(...exactPrices)
 	const exactMin = Math.min(...exactPrices)
 
@@ -53,7 +52,6 @@ export async function GET({ params, locals, url, request }) {
 	const partialPrices = partialMatches.map((record) => record.price)
 	const partialAverage = calculateAverage(partialPrices)
 	const partialMedian = calculateMedian(partialPrices)
-	const randomPartialPrices = partialPrices.sort(() => Math.random() - 0.5)
 
 	let result = {
 		exact: undefined,
@@ -61,7 +59,7 @@ export async function GET({ params, locals, url, request }) {
 			median: partialMedian,
 			average: partialAverage,
 			count: partialPrices.length,
-			prices: randomPartialPrices.slice(0, Math.min(10, randomPartialPrices.length)),
+			prices: partialPrices.slice(0, 10),
 		},
 	}
 
@@ -71,7 +69,7 @@ export async function GET({ params, locals, url, request }) {
 			median: exactMedian,
 			average: exactAverage,
 			count: exactPrices.length,
-			prices: randomExactPrices.slice(0, Math.min(10, exactPrices.length)),
+			prices: exactPrices.slice(0, 10),
 			max: exactMax,
 			min: exactMin,
 		}
