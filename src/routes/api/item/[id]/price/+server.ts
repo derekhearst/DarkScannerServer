@@ -43,21 +43,17 @@ export async function GET({ params, locals, url, request }) {
 
 	const exactMatches = data.filter((record) => record.enchantmentIds.every((id) => enchantmentIds.includes(id)))
 	const exactPrices = exactMatches.map((record) => record.price)
-	const exactAverage = calculateAverage(exactPrices)
 	const exactMedian = calculateMedian(exactPrices)
-	const exactMax = Math.max(...exactPrices)
-	const exactMin = Math.min(...exactPrices)
 
 	const partialMatches = data
 	const partialPrices = partialMatches.map((record) => record.price)
-	const partialAverage = calculateAverage(partialPrices)
 	const partialMedian = calculateMedian(partialPrices)
+	const randomPrices = partialPrices.sort(() => Math.random() - 0.5)
 
 	let result = {
 		exact: undefined,
 		partial: {
 			median: partialMedian,
-			average: partialAverage,
 			count: partialPrices.length,
 			prices: partialPrices.slice(0, 10),
 		},
@@ -67,11 +63,8 @@ export async function GET({ params, locals, url, request }) {
 		// @ts-expect-error this is fine
 		result.exact = {
 			median: exactMedian,
-			average: exactAverage,
 			count: exactPrices.length,
-			prices: exactPrices.slice(0, 10),
-			max: exactMax,
-			min: exactMin,
+			prices: randomPrices.slice(0, 10),
 		}
 	}
 
