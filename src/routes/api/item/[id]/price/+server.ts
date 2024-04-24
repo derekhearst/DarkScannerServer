@@ -55,22 +55,29 @@ export async function GET({ params, locals, url, request }) {
 	const partialMedian = calculateMedian(partialPrices)
 	const randomPartialPrices = partialPrices.sort(() => Math.random() - 0.5)
 
-	return json({
-		exact: {
-			median: exactMedian,
-			average: exactAverage,
-			count: exactPrices.length,
-			prices: randomExactPrices.toSpliced(0, Math.min(10, exactPrices.length)),
-			max: exactMax,
-			min: exactMin,
-		},
+	let result = {
+		exact: undefined,
 		partial: {
 			median: partialMedian,
 			average: partialAverage,
 			count: partialPrices.length,
-			prices: randomPartialPrices.toSpliced(0, Math.min(10, randomPartialPrices.length)),
+			prices: randomPartialPrices.slice(0, Math.min(10, randomPartialPrices.length)),
 		},
-	})
+	}
+
+	if (exactPrices.length > 0) {
+		// @ts-expect-error this is fine
+		result.exact = {
+			median: exactMedian,
+			average: exactAverage,
+			count: exactPrices.length,
+			prices: randomExactPrices.slice(0, Math.min(10, exactPrices.length)),
+			max: exactMax,
+			min: exactMin,
+		}
+	}
+
+	return json(result)
 }
 
 export async function POST({ locals, request }) {
