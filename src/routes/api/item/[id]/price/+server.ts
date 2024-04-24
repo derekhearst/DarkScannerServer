@@ -56,14 +56,14 @@ export async function GET({ params, locals, url, request }) {
 		exact: {
 			median: exactMedian,
 			average: exactAverage,
-			prices: exactPrices.splice(0, Math.min(10, exactPrices.length)),
 			count: exactPrices.length,
+			prices: exactPrices.toSpliced(0, Math.min(10, exactPrices.length)),
 		},
 		partial: {
 			median: partialMedian,
 			average: partialAverage,
-			prices: randomPartialPrices.splice(0, Math.min(10, randomPartialPrices.length)),
 			count: partialPrices.length,
+			prices: randomPartialPrices.toSpliced(0, Math.min(10, randomPartialPrices.length)),
 		},
 	})
 }
