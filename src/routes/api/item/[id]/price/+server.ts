@@ -26,7 +26,7 @@ export async function GET({ params, locals, url, request }) {
 	const records: returnType[] = await db.$queryRaw`
 		SELECT "ItemPrice".*, GROUP_CONCAT("_EnchantmentToItemPrice"."A") AS "enchantmentIds"
 		FROM "ItemPrice"
-		JOIN "_EnchantmentToItemPrice" ON "_EnchantmentToItemPrice"."B" = "ItemPrice"."id"
+		LEFT JOIN "_EnchantmentToItemPrice" ON "_EnchantmentToItemPrice"."B" = "ItemPrice"."id"
 		WHERE "itemId" = ${itemId} AND "rarityId" = ${rarityId}
 		GROUP BY "ItemPrice"."id"`
 
