@@ -1,6 +1,6 @@
 import { calculateAverage, calculateMedian } from '$lib/calc'
 import { enchantments, items } from '$lib/server/constants'
-import type { Item, Rarity, Enchantment } from '@prisma/client'
+import type { Item, Rarity, Enchantment, ItemPrice } from '@prisma/client'
 import { error, json } from '@sveltejs/kit'
 
 export async function GET({ params, locals, url, request }) {
@@ -15,77 +15,33 @@ export async function GET({ params, locals, url, request }) {
 	if (isNaN(rarityId)) error(400, 'Invalid rarity')
 	const { db } = locals
 
-	// #region Check for exact match
-	const exactMatchPrices = await db.itemPrice.findMany({
-		where: {
-			itemId: itemId,
-			rarityId: rarityId,
-			enchantments: {
-				every: { id: { in: enchantmentIds } },
-			},
-		},
-		orderBy: { createdAt: 'desc' },
-	})
-	if (exactMatchPrices.length) {
-		const median = calculateMedian(exactMatchPrices)
-		const average = calculateAverage(exactMatchPrices)
-		return json({
-			median: median,
-			average: average,
-			prices: exactMatchPrices.map((price) => price.price),
-			exact: true,
-		})
+	type returnType = {
+		id: number
+		itemId: number
+		rarityId: number
+		price: number
+		createdAt: string
+		enchantmentIds: string
 	}
-	// #endregion
-	// #region Check for partial match
-	const partialMatchPrices = await db.itemPrice.findMany({
-		where: {
-			itemId: itemId,
-			rarityId: rarityId,
-			enchantments: {
-				some: { id: { in: enchantmentIds } },
-			},
-		},
-		include: { enchantments: true },
+	const records: returnType[] = await db.$queryRaw`
+		SELECT "ItemPrice".*, GROUP_CONCAT("_EnchantmentToItemPrice"."A") AS "enchantmentIds"
+		FROM "ItemPrice"
+		JOIN "_EnchantmentToItemPrice" ON "_EnchantmentToItemPrice"."B" = "ItemPrice"."id"
+		WHERE "itemId" = ${itemId} AND "rarityId" = ${rarityId}
+		GROUP BY "ItemPrice"."id"`
+
+	const data = records.map((record) => {
+		return {
+			id: record.id,
+			itemId: record.itemId,
+			rarityId: record.rarityId,
+			price: record.price,
+			createdAt: record.createdAt,
+			enchantmentIds: record.enchantmentIds.split(',').map((id) => parseInt(id)),
+		}
 	})
-	if (partialMatchPrices.length) {
-		const mappedWithMatchCount = partialMatchPrices.map((price) => {
-			const matchCount = price.enchantments.filter((en) => enchantmentIds.includes(en.id)).length
-			return { price, matchCount }
-		})
-		const sortedByEnchantmentInclude = mappedWithMatchCount.sort((price1, price2) => {
-			return price1.matchCount - price2.matchCount
-		})
-		const bestMatch = sortedByEnchantmentInclude[0]
-		const matchesBasedOffBestMatch = sortedByEnchantmentInclude.filter(
-			(price) => price.matchCount === bestMatch.matchCount,
-		)
-		const prices = matchesBasedOffBestMatch.map((price) => price.price)
-		const median = calculateMedian(prices)
-		const average = calculateAverage(prices)
-		return json({
-			price: median,
-			average: average,
-			prices: prices.map((price) => price.price),
-			matchCount: bestMatch.matchCount,
-		})
-	}
-	// #endregion
-	// #region Just get the median
-	const prices = await db.itemPrice.findMany({
-		where: {
-			itemId: itemId,
-			rarityId,
-		},
-	})
-	const median = calculateMedian(prices)
-	const average = calculateAverage(prices)
-	return json({
-		price: median,
-		average: average,
-		prices: prices.map((price) => price.price),
-	})
-	// #endregion
+
+	return json(data)
 }
 
 export async function POST({ locals, request }) {
