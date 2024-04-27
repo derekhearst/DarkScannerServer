@@ -55,7 +55,7 @@ export async function GET({ params, locals, url, request }) {
 		partial: {
 			median: partialMedian,
 			count: partialPrices.length,
-			prices: partialPrices.slice(0, 10),
+			prices: randomPrices.slice(0, 10),
 		},
 	}
 
@@ -64,7 +64,7 @@ export async function GET({ params, locals, url, request }) {
 		result.exact = {
 			median: exactMedian,
 			count: exactPrices.length,
-			prices: randomPrices.slice(0, 10),
+			prices: exactPrices,
 		}
 	}
 
